@@ -7,7 +7,7 @@ pub const isHeader = @"test".isHeader;
 pub fn write (path: [] const u8, name: [] const u8,
   content: [] const u8) !void
 {
-  std.debug.print ("[write {s}/{s}]\n", .{ path, name, });
+  // std.debug.print ("[write {s}/{s}]\n", .{ path, name, });
   var dir = try std.fs.openDirAbsolute (path, .{});
   defer dir.close ();
   try dir.writeFile (.{ .sub_path = name, .data = content, });
@@ -15,14 +15,14 @@ pub fn write (path: [] const u8, name: [] const u8,
 
 pub fn make (path: [] const u8) !void
 {
-  std.debug.print ("[make {s}]\n", .{ path, });
+  // std.debug.print ("[make {s}]\n", .{ path, });
   std.fs.makeDirAbsolute (path) catch |err|
     if (err != error.PathAlreadyExists) return err;
 }
 
 pub fn copy (src: [] const u8, dest: [] const u8) !void
 {
-  std.debug.print ("[copy {s} {s}]\n", .{ src, dest });
+  // std.debug.print ("[copy {s} {s}]\n", .{ src, dest });
   try std.fs.copyFileAbsolute (src, dest, .{});
 }
 
@@ -35,8 +35,8 @@ pub fn run (builder: *std.Build, proc: struct { argv: [] const [] const u8,
   var stderr = std.ArrayList (u8).init (builder.allocator);
   errdefer { stdout.deinit (); stderr.deinit (); }
 
-  std.debug.print ("\x1b[35m[{s}]\x1b[0m\n",
-    .{ try std.mem.join (builder.allocator, " ", proc.argv), });
+  // std.debug.print ("\x1b[35m[{s}]\x1b[0m\n",
+  //   .{ try std.mem.join (builder.allocator, " ", proc.argv), });
 
   var child = std.process.Child.init (proc.argv, builder.allocator);
 
@@ -104,13 +104,13 @@ pub fn clean (builder: *std.Build, paths: [] const [] const u8,
             if (isSource (entry.basename) or
               isHeader (entry.basename)) continue :walk;
             try std.fs.deleteFileAbsolute (entry_abspath);
-            std.debug.print ("[clean] {s}\n", .{ entry_abspath, });
+            // std.debug.print ("[clean] {s}\n", .{ entry_abspath, });
             flag = true;
           },
           .directory => {
             std.fs.deleteDirAbsolute (entry_abspath) catch |err|
               if (err == error.DirNotEmpty) continue :walk else return err;
-            std.debug.print ("[clean] {s}\n", .{ entry_abspath, });
+            // std.debug.print ("[clean] {s}\n", .{ entry_abspath, });
             flag = true;
           },
           else => {},

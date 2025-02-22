@@ -89,7 +89,7 @@ pub const Repository = struct
     tmp: [] const u8) !@This ()
   {
     var commit: [] const u8 = undefined;
-    var tag: [] u8 = undefined;
+    var tag: [] const u8 = undefined;
     for (0 .. std.math.maxInt (usize)) |i|
     {
       commit = try std.fmt.allocPrint (builder.allocator, "HEAD~{}", .{ i, });
@@ -150,7 +150,7 @@ pub const Dependencies = struct
     inline for (.{ intern_proto, extern_proto, },
       &.{ "__intern", "__extern", }) |proto, attr|
     {
-      inline for (@typeInfo (@TypeOf (proto)).Struct.fields) |field|
+      inline for (@typeInfo (@TypeOf (proto)).@"struct".fields) |field|
       {
         const name = @field (proto, field.name).name;
         const host = @field (proto, field.name).host;
@@ -245,7 +245,7 @@ pub const Dependencies = struct
         "{s}/archive/refs/tags/{s}.tar.gz",
         .{ self.getIntern (key.*).getUrl (),
            self.getIntern (key.*).getLatest (), });
-      var hash: [] u8 = undefined;
+      var hash: [] const u8 = undefined;
       try run (builder, .{ .argv = &[_][] const u8 { "zig", "fetch", url, },
         .stdout = &hash, });
       try writer.print (
